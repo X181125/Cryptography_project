@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đề xuất Đồ án: Nâng Cao An Toàn Cho Nền Tảng Đa Phương Tiện</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .section-title { font-size: 1.75rem; font-weight: 600; margin-bottom: 1.5rem; color: #1e3a8a; } /* Deep Blue */
+        .subsection-title { font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem; color: #1d4ed8; } /* Blue */
+        .content-text { color: #374151; line-height: 1.75; } /* Gray */
+        .card { background-color: white; border-radius: 0.75rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05); padding: 1.5rem; margin-bottom: 1.5rem; }
+        .tab-button { padding: 0.5rem 1rem; margin-right: 0.5rem; border-radius: 0.375rem; cursor: pointer; transition: background-color 0.3s, color 0.3s; font-weight: 500;}
+        .tab-button.active { background-color: #1d4ed8; color: white; }
+        .tab-button:not(.active) { background-color: #e0e7ff; color: #1e3a8a; }
+        .details-content { display: none; margin-top: 0.75rem; padding: 1rem; background-color: #f3f4f6; border-radius: 0.375rem; border-left: 4px solid #1d4ed8;}
+        .chart-container { position: relative; width: 100%; max-width: 450px; margin-left: auto; margin-right: auto; height:auto; max-height: 400px; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        html { scroll-behavior: smooth; }
+        .nav-link { padding: 0.75rem 1rem; color: #dbeafe; transition: background-color 0.3s, color 0.3s; border-radius: 0.375rem; font-weight: 500;}
+        .nav-link:hover, .nav-link.active { background-color: #dbeafe; color: #1e3a8a; }
+        .hero-section {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            padding: 3rem 1rem;
+            text-align: center;
+        }
+        .hero-title { font-size: 2.25rem; font-weight: 700; margin-bottom: 0.75rem; }
+        .hero-subtitle { font-size: 1.15rem; opacity: 0.9; }
+        .footer {
+            background-color: #111827;
+            color: #9ca3af;
+            padding: 2rem 1rem;
+            text-align: center;
+        }
+        .stride-card {
+            background-color: #e0e7ff;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .stride-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+        }
+        .stride-title {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800">
+
+    <header class="bg-blue-700 text-white sticky top-0 z-50 shadow-lg">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <h1 class="text-xl sm:text-2xl font-bold">Đồ án Mật Mã Học</h1>
+                <nav class="hidden md:flex space-x-1">
+                    <a href="#overview" class="nav-link">Tổng quan</a>
+                    <a href="#context" class="nav-link">Bối cảnh</a>
+                    <a href="#risk-analysis" class="nav-link">Phân tích Rủi ro</a>
+                    <a href="#solution" class="nav-link">Giải pháp</a>
+                    <a href="#implementation" class="nav-link">Triển khai</a>
+                    <a href="#assessment" class="nav-link">Đánh giá</a>
+                    <a href="#team" class="nav-link">Nhóm</a>
+                </nav>
+                <button id="mobile-menu-button" class="md:hidden p-2 rounded-md text-blue-200 hover:text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+                    <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </div>
+        <div id="mobile-menu" class="md:hidden hidden">
+            <a href="#overview" class="block nav-link text-base px-4 py-2">Tổng quan</a>
+            <a href="#context" class="block nav-link text-base px-4 py-2">Bối cảnh</a>
+            <a href="#risk-analysis" class="block nav-link text-base px-4 py-2">Phân tích Rủi ro</a>
+            <a href="#solution" class="block nav-link text-base px-4 py-2">Giải pháp</a>
+            <a href="#implementation" class="block nav-link text-base px-4 py-2">Triển khai</a>
+            <a href="#assessment" class="block nav-link text-base px-4 py-2">Đánh giá</a>
+            <a href="#team" class="block nav-link text-base px-4 py-2">Nhóm</a>
+        </div>
+    </header>
+
+    <div class="hero-section">
+        <h1 class="hero-title">Nâng Cao An Toàn Cho Nền Tảng Dịch Vụ Đa Phương Tiện</h1>
+        <p class="hero-subtitle">Sử dụng Hệ Thống Mật Mã Lai kết hợp Chaotic Stream Cipher và AES-256</p>
+    </div>
+
+    <main class="container mx-auto p-4 sm:p-6 lg:p-8">
+        <section id="overview" class="pt-20 -mt-16 mb-12">
+            <h2 class="section-title">1. Giới thiệu và Bối cảnh</h2>
+            <div class="card">
+                <p class="content-text mb-4">
+                    Trong thời đại các dịch vụ truyền thông đa phương tiện thời gian thực ngày càng phát triển mạnh mẽ, như hội nghị trực tuyến, livestream hay VoIP, việc đảm bảo tính bảo mật cho luồng dữ liệu truyền đi trở thành một yêu cầu thiết yếu.
+                </p>
+                <p class="content-text mb-4">
+                    Các giải pháp mã hóa truyền thống như AES (Advanced Encryption Standard) rất hiệu quả với dữ liệu tĩnh nhưng thường không phù hợp cho các ứng dụng thời gian thực do độ trễ mã hóa.
+                </p>
+                <p class="content-text">
+                    Dự án này đề xuất xây dựng một <strong>hệ thống mật mã lai (hybrid cryptographic system)</strong> kết hợp giữa Chaotic Stream Cipher (dùng cho việc mã hóa dữ liệu thời gian thực như video/audio, nhằm giảm độ trễ) và AES-256 (dùng cho bảo mật dữ liệu lưu trữ, metadata và các thông tin nhạy cảm). Dự án sẽ phát triển một nguyên mẫu (prototype) gồm client và server, đảm bảo các nguyên lý bảo mật thông tin như confidentiality, integrity, availability và authenticity.
+                </p>
+            </div>
+        </section>
+
+        <section id="context" class="pt-20 -mt-16 mb-12">
+            <h2 class="section-title">2. Tài sản, Bên liên quan và Vai trò</h2>
+            <div class="card">
+                <h3 class="subsection-title">Tài sản (Assets)</h3>
+                <ul class="list-disc list-inside content-text space-y-1 mb-4">
+                    <li><strong>Dữ liệu:</strong> video/audio stream, thông tin người dùng, metadata cấu hình.</li>
+                    <li><strong>Hệ thống phần mềm:</strong> ứng dụng client và server.</li>
+                    <li><strong>Khóa mã hóa:</strong> khóa AES, seed của Chaotic Cipher.</li>
+                    <li><strong>Tài sản vô hình:</strong> quyền riêng tư người dùng, độ tin cậy hệ thống.</li>
+                </ul>
+
+                <h3 class="subsection-title">Bên liên quan (Stakeholders)</h3>
+                <ul class="list-disc list-inside content-text space-y-1 mb-4">
+                    <li><strong>End-users:</strong> sử dụng hệ thống để truyền/nhận dữ liệu đa phương tiện.</li>
+                    <li><strong>Developers:</strong> thiết kế và triển khai giải pháp mật mã.</li>
+                    <li><strong>System administrators:</strong> triển khai và duy trì môi trường an toàn.</li>
+                    <li><strong>Security engineers:</strong> đảm bảo hệ thống tuân thủ nguyên lý mật mã học.</li>
+                    <li><strong>Attackers (trong mô hình mối đe dọa):</strong> các tác nhân gây nguy hại đến hệ thống.</li>
+                </ul>
+
+                <h3 class="subsection-title">Vai trò cụ thể (Roles)</h3>
+                <ul class="list-disc list-inside content-text space-y-1">
+                    <li><strong>System owner:</strong> đặt ra các chính sách bảo mật.</li>
+                    <li><strong>Data custodian:</strong> quản lý và bảo vệ khóa mã hóa.</li>
+                    <li><strong>Auditor:</strong> kiểm tra tính đúng đắn và tuân thủ thiết kế.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="risk-analysis" class="pt-20 -mt-16 mb-12">
+            <h2 class="section-title">3. Phân tích Rủi ro Bảo mật</h2>
+            <div class="card">
+                <p class="content-text mb-4">
+                    Phân tích rủi ro bắt đầu bằng việc xác định tài sản và các điểm truy cập vào chúng. Các điểm truy cập chính bao gồm socket mạng, file cấu hình, và giao diện nhập liệu của người dùng. Ranh giới tin cậy được thiết lập giữa client và server, cũng như giữa dữ liệu đã mã hóa và dữ liệu thô.
+                </p>
+                <h3 class="subsection-title">Mô hình hóa mối đe dọa (STRIDE)</h3>
+                <p class="content-text mb-4">Nhấp vào từng yếu tố của STRIDE để xem ví dụ áp dụng cho dự án:</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                    <div class="stride-card" data-stride="s">
+                        <h4 class="stride-title">S - Spoofing (Giả mạo)</h4>
+                        <div class="details-content content-text">Kẻ tấn công giả mạo danh tính người dùng.</div>
+                    </div>
+                    <div class="stride-card" data-stride="t">
+                        <h4 class="stride-title">T - Tampering (Thay đổi)</h4>
+                        <div class="details-content content-text">Thay đổi dữ liệu trong quá trình truyền.</div>
+                    </div>
+                    <div class="stride-card" data-stride="r">
+                        <h4 class="stride-title">R - Repudiation (Chối bỏ)</h4>
+                        <div class="details-content content-text">Từ chối đã thực hiện hành động truyền dữ liệu.</div>
+                    </div>
+                    <div class="stride-card" data-stride="i">
+                        <h4 class="stride-title">I - Information Disclosure (Tiết lộ thông tin)</h4>
+                        <div class="details-content content-text">Nghe lén dữ liệu truyền đi.</div>
+                    </div>
+                    <div class="stride-card" data-stride="d">
+                        <h4 class="stride-title">D - Denial of Service (Từ chối dịch vụ)</h4>
+                        <div class="details-content content-text">Gửi nhiều yêu cầu khiến server ngừng hoạt động.</div>
+                    </div>
+                    <div class="stride-card" data-stride="e">
+                        <h4 class="stride-title">E - Elevation of Privilege (Leo thang đặc quyền)</h4>
+                        <div class="details-content content-text">Truy cập trái phép vào module xử lý khóa.</div>
+                    </div>
+                </div>
+
+                <h3 class="subsection-title">Đánh giá rủi ro</h3>
+                <div class="overflow-x-auto mb-4">
+                    <table class="min-w-full bg-white border border-gray-200">
+                        <thead class="bg-blue-50">
+                            <tr>
+                                <th class="text-left py-2 px-3 border-b">Mối đe dọa</th>
+                                <th class="text-left py-2 px-3 border-b">Khả năng xảy ra</th>
+                                <th class="text-left py-2 px-3 border-b">Mức độ ảnh hưởng</th>
+                                <th class="text-left py-2 px-3 border-b">Ưu tiên xử lý</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-gray-700">
+                            <tr>
+                                <td class="py-2 px-3 border-b">Man-in-the-middle</td>
+                                <td class="py-2 px-3 border-b">Trung bình</td>
+                                <td class="py-2 px-3 border-b">Cao</td>
+                                <td class="py-2 px-3 border-b">Cao</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-3 border-b">Replay attack</td>
+                                <td class="py-2 px-3 border-b">Thấp</td>
+                                <td class="py-2 px-3 border-b">Trung bình</td>
+                                <td class="py-2 px-3 border-b">Trung bình</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-3 border-b">Key leakage</td>
+                                <td class="py-2 px-3 border-b">Thấp</td>
+                                <td class="py-2 px-3 border-b">Cao</td>
+                                <td class="py-2 px-3 border-b">Cao</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3 class="subsection-title">Biện pháp giảm thiểu</h3>
+                 <ul class="list-disc list-inside content-text space-y-1">
+                    <li>Sử dụng kênh truyền an toàn (TLS hoặc SSH) cho các luồng điều khiển.</li>
+                    <li>Áp dụng token có thời hạn để ngăn chặn replay attack.</li>
+                    <li>Quản lý khóa chỉ trong bộ nhớ RAM, không ghi xuống đĩa.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="solution" class="pt-20 -mt-16 mb-12">
+            <h2 class="section-title">4. Mục tiêu Bảo mật và Kiến trúc Giải pháp</h2>
+            <div class="card">
+                <h3 class="subsection-title">Mục tiêu Bảo mật (CIA Mở rộng)</h3>
+                <div class="overflow-x-auto mb-6">
+                    <table class="min-w-full bg-white border border-gray-200">
+                        <thead class="bg-blue-50">
+                            <tr>
+                                <th class="text-left py-2 px-3 border-b">Mục tiêu</th>
+                                <th class="text-left py-2 px-3 border-b">Nội dung</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-gray-700">
+                            <tr>
+                                <td class="py-2 px-3 border-b"><strong>Confidentiality</strong></td>
+                                <td class="py-2 px-3 border-b">Bảo mật nội dung dữ liệu qua AES và Chaotic Cipher.</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-3 border-b"><strong>Integrity</strong></td>
+                                <td class="py-2 px-3 border-b">Đảm bảo dữ liệu không bị sửa đổi qua authenticated encryption (AES-GCM).</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-3 border-b"><strong>Availability</strong></td>
+                                <td class="py-2 px-3 border-b">Hệ thống truyền dữ liệu ổn định, đáp ứng thời gian thực.</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-3 border-b"><strong>Authenticity</strong></td>
+                                <td class="py-2 px-3 border-b">Xác thực người dùng qua hệ thống đăng nhập và quản lý phiên.</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-3 border-b"><strong>Non-repudiation</strong></td>
+                                <td class="py-2 px-3 border-b">Ghi log đầy đủ các sự kiện nhằm ngăn chặn việc từ chối hành vi.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3 class="subsection-title">Kiến trúc Giải pháp</h3>
+                <div class="content-text mb-4">
+                    <p class="mb-2"><strong>Thuật toán và giao thức mật mã:</strong></p>
+                    <ul class="list-disc list-inside space-y-1 pl-4">
+                        <li><strong>AES-256 (GCM hoặc CBC):</strong> Bảo vệ thông tin người dùng, metadata.</li>
+                        <li><strong>Chaotic Stream Cipher:</strong> Logistic map hoặc Chebyshev map tạo keystream XOR với dữ liệu.</li>
+                        <li><strong>Key derivation:</strong> PBKDF2 từ mật khẩu.</li>
+                        <li><strong>Thư viện:</strong> pycryptodome, socket, hashlib.</li>
+                    </ul>
+                </div>
+                <div class="grid md:grid-cols-2 gap-6 mb-4">
+                    <div class="p-4 border border-gray-200 rounded-lg bg-slate-50">
+                        <h4 class="font-semibold text-blue-600 mb-2">Thành phần Client</h4>
+                        <ul class="list-disc list-inside content-text space-y-1">
+                            <li>Chaotic Cipher engine.</li>
+                            <li>AES encryption cho metadata.</li>
+                            <li>Giao diện xác thực.</li>
+                            <li>Module truyền video/audio.</li>
+                        </ul>
+                    </div>
+                    <div class="p-4 border border-gray-200 rounded-lg bg-slate-50">
+                        <h4 class="font-semibold text-blue-600 mb-2">Thành phần Server</h4>
+                        <ul class="list-disc list-inside content-text space-y-1">
+                            <li>AES/Chaotic decryption engine.</li>
+                            <li>Module xác thực và ghi log.</li>
+                        </ul>
+                    </div>
+                </div>
+                 <div class="content-text mb-4">
+                    <p class="mb-2"><strong>Key Management:</strong></p>
+                    <ul class="list-disc list-inside space-y-1 pl-4">
+                        <li>Tạo, lưu trữ khóa tạm thời trong RAM.</li>
+                        <li>Có thể mở rộng sang quản lý theo phiên.</li>
+                    </ul>
+                </div>
+                <div class="content-text">
+                    <p class="mb-2"><strong>Chiến lược tích hợp:</strong></p>
+                    <ul class="list-disc list-inside space-y-1 pl-4">
+                        <li>Áp dụng defense-in-depth: nhiều lớp mã hóa, kiểm soát quyền truy cập.</li>
+                        <li>Principle of least privilege: các module chỉ được cấp quyền tối thiểu.</li>
+                        <li>Bảo mật các ranh giới tin cậy: mã hóa trước khi lưu vào CSDL hoặc gửi qua socket.</li>
+                        <li>Ưu tiên sử dụng các API, giao thức chuẩn hóa.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="implementation" class="pt-20 -mt-16 mb-12">
+            <h2 class="section-title">5. Trình diễn, Triển khai và Kiểm thử</h2>
+            <div class="card">
+                <p class="content-text mb-4">
+                    Dự án sẽ được phát triển bằng Python, mô phỏng client/server trên Docker hoặc localhost, và quản lý thư viện bằng pip thông qua file requirements.txt.
+                </p>
+                <div id="testing-tabs-container" class="mb-4">
+                    <button class="tab-button active" data-tab="functional">Kiểm thử Chức năng</button>
+                    <button class="tab-button" data-tab="security">Kiểm thử Bảo mật</button>
+                    <button class="tab-button" data-tab="performance">Kiểm thử Hiệu năng</button>
+                    <button class="tab-button" data-tab="deploy">Triển khai</button>
+                </div>
+
+                <div id="functional-tab-content" class="tab-content block">
+                    <h4 class="text-lg font-semibold text-blue-600 mb-2">Kiểm thử Chức năng</h4>
+                    <ul class="list-disc list-inside content-text space-y-1">
+                        <li>Unit test: mã hóa AES đúng với vector kiểm thử NIST.</li>
+                        <li>Kiểm thử Chaotic Cipher: kiểm tra tính ngẫu nhiên của keystream.</li>
+                        <li>Kiểm thử tích hợp: truyền dữ liệu qua socket, giải mã đúng dữ liệu.</li>
+                    </ul>
+                </div>
+                <div id="security-tab-content" class="tab-content hidden">
+                    <h4 class="text-lg font-semibold text-blue-600 mb-2">Kiểm thử Bảo mật</h4>
+                    <ul class="list-disc list-inside content-text space-y-1">
+                        <li>Phân tích tĩnh bằng bandit.</li>
+                        <li>Mô phỏng man-in-the-middle bằng proxy nội bộ.</li>
+                        <li>Đảm bảo không có khóa được ghi cứng trong mã nguồn.</li>
+                    </ul>
+                </div>
+                <div id="performance-tab-content" class="tab-content hidden">
+                    <h4 class="text-lg font-semibold text-blue-600 mb-2">Kiểm thử Hiệu năng</h4>
+                    <ul class="list-disc list-inside content-text space-y-1">
+                        <li>So sánh tốc độ mã hóa AES và Chaotic.</li>
+                        <li>Đo entropy dữ liệu đầu ra.</li>
+                        <li>Đo độ trễ đầu-cuối trong quá trình truyền.</li>
+                    </ul>
+                </div>
+                <div id="deploy-tab-content" class="tab-content hidden">
+                    <h4 class="text-lg font-semibold text-blue-600 mb-2">Triển khai</h4>
+                    <ul class="list-disc list-inside content-text space-y-1">
+                        <li>Tạo Dockerfile và script triển khai nhanh.</li>
+                        <li>Tài liệu hóa quy trình chạy demo.</li>
+                        <li>Cấu hình bảo mật: giới hạn cổng, mã hóa tất cả truyền thông.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="assessment" class="pt-20 -mt-16 mb-12">
+            <h2 class="section-title">6. Đánh giá theo Tiêu chí</h2>
+            <div class="card">
+                <p class="content-text mb-4">
+                    Dự án sẽ được đánh giá dựa trên các tiêu chí đã được xác định trong đề xuất. Biểu đồ dưới đây thể hiện tỷ trọng của từng tiêu chí (lưu ý: tỷ trọng chỉ mang tính minh họa dựa trên các mục chính, không phải là tỷ trọng chính thức của môn học).
+                </p>
+                <div class="md:flex md:items-center md:space-x-6">
+                    <div class="md:w-2/5">
+                        <div class="chart-container mx-auto md:mx-0">
+                            <canvas id="assessmentChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="md:w-3/5 mt-6 md:mt-0">
+                         <h4 class="text-lg font-semibold text-blue-600 mb-3">Nội dung đáp ứng các tiêu chí:</h4>
+                        <ul class="list-disc list-inside content-text space-y-2">
+                            <li><strong>Nghiên cứu lý thuyết:</strong> Tìm hiểu AES, Chaotic Cipher, STRIDE, CIA.</li>
+                            <li><strong>Mục tiêu & mối đe dọa:</strong> Xác định rõ mục tiêu bảo mật và phân tích rủi ro.</li>
+                            <li><strong>Thiết kế giải pháp:</strong> Áp dụng nguyên lý chuẩn, mã hóa kết hợp hợp lý.</li>
+                            <li><strong>Cài đặt kỹ thuật:</strong> Mã nguồn Python rõ ràng, sử dụng thư viện an toàn.</li>
+                            <li><strong>Kiểm thử & xác thực:</strong> Có kiểm thử chức năng, bảo mật, hiệu năng.</li>
+                            <li><strong>Tài liệu báo cáo:</strong> Báo cáo chuẩn, sơ đồ, hướng dẫn demo đầy đủ.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="team" class="pt-20 -mt-16 mb-12">
+            <h2 class="section-title">7. Nhóm Thực Hiện</h2>
+            <div class="card">
+                 <p class="content-text mb-1"><strong>Giảng viên hướng dẫn:</strong> Nguyễn Ngọc Tự</p>
+                <p class="content-text mb-3"><strong>Sinh viên thực hiện:</strong></p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="p-4 bg-blue-50 rounded-lg text-center">
+                        <p class="font-semibold text-blue-700">Nguyễn Đình Hưng</p>
+                        <p class="text-sm text-gray-600">23520564</p>
+                    </div>
+                    <div class="p-4 bg-blue-50 rounded-lg text-center">
+                        <p class="font-semibold text-blue-700">Trần Quang Huy</p>
+                        <p class="text-sm text-gray-600">23520648</p>
+                    </div>
+                    <div class="p-4 bg-blue-50 rounded-lg text-center">
+                        <p class="font-semibold text-blue-700">Trịnh Nhật Duy</p>
+                        <p class="text-sm text-gray-600">23520394</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        <p class="text-sm">
+            Trường Đại học Công nghệ Thông tin - ĐHQG TP.HCM <br>
+            Đồ án Môn học Mật mã học - Đề tài: Enhancing Security for Multimedia Service Platforms using a Hybrid Cryptographic System.
+        </p>
+        <p class="text-xs mt-2">&copy; 2025 Nhóm sinh viên. Nội dung dựa trên đề xuất đồ án.</p>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            const isExpanded = mobileMenuButton.getAttribute('aria-expanded') === 'true' || false;
+            mobileMenuButton.setAttribute('aria-expanded', !isExpanded);
+            if (mobileMenu.classList.contains('hidden')) {
+                mobileMenuButton.innerHTML = `<svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>`;
+            } else {
+                mobileMenuButton.innerHTML = `<svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>`;
+            }
+        });
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                mobileMenuButton.setAttribute('aria-expanded', 'false');
+                mobileMenuButton.innerHTML = `<svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>`;
+            });
+        });
+
+        // STRIDE items toggle details
+        document.querySelectorAll('.stride-card').forEach(card => {
+            const details = card.querySelector('.details-content');
+            card.addEventListener('click', () => {
+                const isVisible = details.style.display === 'block';
+                // Hide all other open details-content first
+                document.querySelectorAll('.stride-card .details-content').forEach(el => {
+                    if (el !== details) { // Don't hide the one we are about to toggle if it's already open
+                        el.style.display = 'none';
+                    }
+                });
+                if (details) {
+                    details.style.display = isVisible ? 'none' : 'block';
+                }
+            });
+        });
+
+        // Testing tabs
+        const tabButtons = document.querySelectorAll('#testing-tabs-container .tab-button');
+        const tabContents = document.querySelectorAll('section#implementation .tab-content');
+        const tabsContainer = document.getElementById('testing-tabs-container');
+
+        if (tabsContainer) {
+            tabsContainer.addEventListener('click', (event) => {
+                const targetButton = event.target.closest('.tab-button');
+                if (!targetButton) return;
+                const tabId = targetButton.dataset.tab;
+
+                tabButtons.forEach(button => button.classList.remove('active'));
+                targetButton.classList.add('active');
+
+                tabContents.forEach(content => {
+                    if (content.id === `${tabId}-tab-content`) {
+                        content.classList.remove('hidden'); content.classList.add('block');
+                    } else {
+                        content.classList.remove('block'); content.classList.add('hidden');
+                    }
+                });
+            });
+        }
+        
+        // Assessment Chart
+        const assessmentData = {
+            labels: [
+                'Nghiên cứu lý thuyết',
+                'Mục tiêu & Mối đe dọa',
+                'Thiết kế giải pháp',
+                'Cài đặt kỹ thuật',
+                'Kiểm thử & Xác thực',
+                'Tài liệu báo cáo'
+            ],
+            datasets: [{
+                label: 'Tỷ trọng Đánh giá (Minh họa)',
+                data: [16.67, 16.67, 16.67, 16.67, 16.67, 16.67], // Equal weight for 6 criteria
+                backgroundColor: [
+                    'rgba(29, 78, 216, 0.7)',  // Blue-700
+                    'rgba(59, 130, 246, 0.7)', // Blue-500
+                    'rgba(34, 197, 94, 0.7)',  // Green-500
+                    'rgba(234, 179, 8, 0.7)',  // Yellow-500
+                    'rgba(249, 115, 22, 0.7)', // Orange-500
+                    'rgba(124, 58, 237, 0.7)'  // Purple-600
+                ],
+                borderColor: [
+                    'rgba(29, 78, 216, 1)',
+                    'rgba(59, 130, 246, 1)',
+                    'rgba(34, 197, 94, 1)',
+                    'rgba(234, 179, 8, 1)',
+                    'rgba(249, 115, 22, 1)',
+                    'rgba(124, 58, 237, 1)'
+                ],
+                borderWidth: 1
+            }]
+        };
+        const assessmentChartCtx = document.getElementById('assessmentChart');
+        if (assessmentChartCtx) {
+            new Chart(assessmentChartCtx, {
+                type: 'doughnut',
+                data: assessmentData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { font: { size: 11 }, color: '#374151', padding:15, boxWidth:12 }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) { label += ': '; }
+                                    if (context.parsed !== null) { label += context.parsed.toFixed(2) + '%'; }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Active navigation link highlighting on scroll
+        const sections = document.querySelectorAll('main section[id]');
+        const navLinks = document.querySelectorAll('header nav a, #mobile-menu a');
+        const headerOffset = 80; 
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - headerOffset) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                const href = link.getAttribute('href');
+                if (href && href.substring(1) === current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
