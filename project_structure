@@ -1,0 +1,19 @@
+secure_video_streamming/
+├── attacker_sniffer.py
+├── chaotic.py
+├── decrypt_utils.py
+├── encrypt_segments.py
+├── encrypt_video.py
+├── requirements.txt
+├── server.py
+├── static/
+│   ├── js/
+│   │   └── script.js
+│   ├── keys/
+│   │   └── (sẽ sinh động file aes_256.key khi chạy encrypt_segments.py)
+│   ├── encrypted_segments/
+│   │   └── (sẽ sinh động các file .bin khi chạy encrypt_segments.py)
+│   └── video/
+│       └── sample.mp4
+└── templates/
+    └── index.html
