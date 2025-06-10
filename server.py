@@ -1,15 +1,13 @@
-# server.py
-
 import os
 import base64
 from flask import Flask, request, jsonify, send_from_directory, render_template, abort
 from flask_cors import CORS
 
-# Xác định thư mục gốc của project (1 cấp lên so với file này)
-BASE_DIR     = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+# Thư mục project
+BASE_DIR     = os.path.abspath(os.path.dirname(__file__))
 TEMPLATES    = os.path.join(BASE_DIR, "templates")
 STATIC       = os.path.join(BASE_DIR, "static")
-KEY_FILE     = os.path.join(STATIC, "keys", "aes_256.key")
+KEYS_DIR     = os.path.join(STATIC, "keys")
 SEGMENT_DIR  = os.path.join(STATIC, "encrypted_segments")
 VALID_TOKEN  = os.getenv("DRM_TOKEN", "abc123")
 
@@ -27,25 +25,27 @@ def index():
 
 @app.route("/segment/<path:filename>")
 def serve_segment(filename):
-    """Phục vụ các file .enc hoặc .bin trong static/encrypted_segments/"""
+    """Phục vụ file .enc hoặc .bin trong static/encrypted_segments/"""
     if not (filename.endswith(".enc") or filename.endswith(".bin")):
         abort(404)
+    # filename có thể là "sample1.enc" hoặc bất kỳ tên gì
     return send_from_directory(SEGMENT_DIR, filename)
 
-@app.route("/get_key", methods=["POST"])
-def get_key():
+@app.route("/get_key/<video_id>")
+def get_key(video_id):
     """
-    Client POST {"token":"..."} để lấy key AES-256 (Base64)
+    GET /get_key/<video_id>?token=abc123
+    Trả về key AES-256 tương ứng video_id (đã lưu thành static/keys/<video_id>.key)
     """
-    data = request.get_json(silent=True) or {}
-    token = data.get("token")
+    token = request.args.get("token", "")
     if token != VALID_TOKEN:
         return jsonify(error="Token không hợp lệ"), 403
 
-    if not os.path.isfile(KEY_FILE):
-        return jsonify(error="Không tìm thấy file key"), 500
+    key_path = os.path.join(KEYS_DIR, f"{video_id}.key")
+    if not os.path.isfile(key_path):
+        return jsonify(error=f"Không tìm thấy key cho video '{video_id}'"), 404
 
-    raw_key = open(KEY_FILE, "rb").read()
+    raw_key = open(key_path, "rb").read()
     key_b64 = base64.b64encode(raw_key).decode("ascii")
     return jsonify(key_b64=key_b64)
 

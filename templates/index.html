@@ -5,20 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Secure Video Streaming HLS-like</title>
 
-  <!-- 1) Load WebAssembly module từ static/wasm -->
-  <script type="module">
-    import ChaoticModule from '/static/wasm/chaotic_wasm.js';
-
-    // Khởi tạo WASM module và expose promise ra toàn cục
-    window.ChaoticModulePromise = ChaoticModule({
-      locateFile(path) {
-        // đảm bảo chaotic_wasm.wasm được load từ đúng thư mục static/wasm
-        return `/static/wasm/${path}`;
-      }
+  <!-- 1) Load WASM module (fallback dạng global) -->
+  <script src="/static/wasm/chaotic_wasm.js"></script>
+  <script>
+    window.ChaoticModulePromise = new Promise((resolve) => {
+      const check = () => {
+        if (typeof ChaoticModule === 'function') {
+          const instance = ChaoticModule({
+            locateFile: (path) => `/static/wasm/${path}`,
+            onRuntimeInitialized() {
+              resolve(instance);
+            }
+          });
+        } else {
+          setTimeout(check, 50);
+        }
+      };
+      check();
     });
   </script>
 
-  <!-- 2) Cuối cùng load script chính của bạn -->
+  <!-- 2) Script chính -->
   <script type="module" src="/static/js/script.js"></script>
 </head>
 <body>
