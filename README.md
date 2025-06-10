@@ -111,16 +111,47 @@ Total pipeline: 0.43s
 
 ---
 
-## 🗂️ Luồng hoạt động của server
+## 🗂️ Luồng hoạt động chi tiết
+
+Dưới đây là diễn giải từng bước xuyên suốt từ lúc client truy cập trang đến khi video được phát:
 
 ```plaintext
-Client                          Server (Flask)
-  | GET /                         | Trả về index.html
-  | GET /static/js/script.js     | Trả về script.js
-  | GET /static/wasm/chaotic...  | Trả về chaotic_wasm.js/.wasm
-  | POST /register_pubkey/sample1| Lưu public key PEM
-  | GET /get_key_rsa/sample1?token| Trả RSA(AES-key) Base64
-  | GET /segment/sample1.enc      | Trả .enc
+1) CLIENT tải trang demo:
+   • GET / → server trả về templates/index.html
+   • Browser tải index.html, parse và thực thi script:
+
+2) TẢI ASSET (Client-side):
+   • GET /static/js/script.js → tải logic decrypt + play
+   • GET /static/wasm/chaotic_wasm.js → tải wrapper WASM
+   • GET /static/wasm/chaotic_wasm.wasm → tải binary WASM
+
+3) KHỞI TẠO RSA (Client-side):
+   • script.js gọi registerPubKey('sample1') → sinh cặp RSA-OAEP
+   • Client POST public key PEM → /register_pubkey/sample1
+   • Server nhận → lưu file static/pubkeys/sample1.pem
+
+4) LẤY AES-KEY (Client-side):
+   • Client GET /get_key_rsa/sample1?token=abc123
+   • Server:
+     - Đọc public key PEM của client
+     - Đọc raw AES-key từ static/keys/sample1.key
+     - Mã hóa AES-key bằng RSA-OAEP (SHA-256)
+     - Trả JSON { key_rsa_b64 }
+   • Client nhận Base64, giải RSA decrypt → raw AES-key
+   • Client importKey → CryptoKey AES-GCM
+
+5) TẢI VÀ GIẢI MÃ SEGMENT (Client-side):
+   • Client GET /segment/sample1.enc
+   • Server trả file .enc (gồm IV||TAG||CIPHERTEXT)
+   • Client đọc ArrayBuffer:
+     - AES-GCM decrypt bằng crypto.subtle
+     - Sinh keystream chaotic từ WASM
+     - XOR với plaintext để phục hồi video gốc
+
+6) PHÁT VIDEO (Client-side):
+   • Tạo Blob URL từ Uint8Array output
+   • Gán vào <video.src> và gọi video.play()
+
 ```
 
 ---
