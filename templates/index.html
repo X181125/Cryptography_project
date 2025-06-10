@@ -3,19 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Secure Video Streaming HLS-like</title>
+  <title>Secure Video Streaming Demo</title>
 
-  <!-- 1) Load WASM module (fallback dạng global) -->
+  <!-- 1) CSS chính -->
+  <link rel="stylesheet" href="/static/css/style.css" />
+
+  <!-- 2) Load WASM module (fallback dạng global) -->
   <script src="/static/wasm/chaotic_wasm.js"></script>
   <script>
     window.ChaoticModulePromise = new Promise((resolve) => {
       const check = () => {
         if (typeof ChaoticModule === 'function') {
           const instance = ChaoticModule({
-            locateFile: (path) => `/static/wasm/${path}`,
-            onRuntimeInitialized() {
-              resolve(instance);
-            }
+            locateFile: path => `/static/wasm/${path}`,
+            onRuntimeInitialized() { resolve(instance); }
           });
         } else {
           setTimeout(check, 50);
@@ -25,18 +26,21 @@
     });
   </script>
 
-  <!-- 2) Script chính -->
+  <!-- 3) Script chính -->
   <script type="module" src="/static/js/script.js"></script>
 </head>
 <body>
-  <h1>HLS-like Secure Streaming Demo</h1>
-  <video
-    id="videoPlayer"
-    width="640"
-    height="360"
-    controls
-    autoplay
-    muted
-  ></video>
+  <div class="container">
+    <header>
+      <h1>HLS-like Secure Streaming Demo</h1>
+      <p class="subtitle">Chaotic XOR + AES-256-GCM + RSA-O AEP</p>
+    </header>
+    <main>
+      <video id="videoPlayer" controls autoplay muted></video>
+    </main>
+    <footer>
+      <p>© 2025 Cryptography & Security Project</p>
+    </footer>
+  </div>
 </body>
 </html>
