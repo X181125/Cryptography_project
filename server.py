@@ -1,55 +1,76 @@
 import os
 import base64
 from flask import Flask, request, jsonify, send_from_directory, render_template, abort
-from flask_cors import CORS
+from cryptography.hazmat.primitives.serialization import load_pem_public_key
+from cryptography.hazmat.primitives.asymmetric import padding
+from cryptography.hazmat.primitives import hashes
 
 # Thư mục project
-BASE_DIR     = os.path.abspath(os.path.dirname(__file__))
-TEMPLATES    = os.path.join(BASE_DIR, "templates")
-STATIC       = os.path.join(BASE_DIR, "static")
-KEYS_DIR     = os.path.join(STATIC, "keys")
-SEGMENT_DIR  = os.path.join(STATIC, "encrypted_segments")
-VALID_TOKEN  = os.getenv("DRM_TOKEN", "abc123")
+BASE_DIR    = os.path.abspath(os.path.dirname(__file__))
+STATIC      = os.path.join(BASE_DIR, "static")
+KEYS_DIR    = os.path.join(STATIC, "keys")
+PUBKEY_DIR  = os.path.join(STATIC, "pubkeys")
+SEGMENT_DIR = os.path.join(STATIC, "encrypted_segments")
+VALID_TOKEN = os.getenv("DRM_TOKEN", "abc123")
 
-app = Flask(
-    __name__,
-    static_folder=STATIC,
-    template_folder=TEMPLATES
-)
-CORS(app)  # Cho phép mọi origin gọi API
+os.makedirs(PUBKEY_DIR, exist_ok=True)
+
+app = Flask(__name__, static_folder=STATIC, template_folder=os.path.join(BASE_DIR, "templates"))
 
 @app.route("/")
 def index():
-    """Trả về trang index.html từ templates/"""
     return render_template("index.html")
 
-@app.route("/segment/<path:filename>")
-def serve_segment(filename):
-    """Phục vụ file .enc hoặc .bin trong static/encrypted_segments/"""
-    if not (filename.endswith(".enc") or filename.endswith(".bin")):
-        abort(404)
-    # filename có thể là "sample1.enc" hoặc bất kỳ tên gì
-    return send_from_directory(SEGMENT_DIR, filename)
-
-@app.route("/get_key/<video_id>")
-def get_key(video_id):
+@app.route("/register_pubkey/<video_id>", methods=["POST"])
+def register_pubkey(video_id):
     """
-    GET /get_key/<video_id>?token=abc123
-    Trả về key AES-256 tương ứng video_id (đã lưu thành static/keys/<video_id>.key)
+    Client gửi public key PEM (PKCS#8) lên để server mã hóa AES-key sau này.
+    """
+    pem_data = request.get_data()
+    pub_path = os.path.join(PUBKEY_DIR, f"{video_id}.pem")
+    with open(pub_path, "wb") as f:
+        f.write(pem_data)
+    return "", 204
+
+@app.route("/get_key_rsa/<video_id>")
+def get_key_rsa(video_id):
+    """
+    Đọc AES key, mã hóa bằng public key của client (RSA-OAEP), trả về Base64.
     """
     token = request.args.get("token", "")
     if token != VALID_TOKEN:
         return jsonify(error="Token không hợp lệ"), 403
 
+    # Load public key client
+    pub_path = os.path.join(PUBKEY_DIR, f"{video_id}.pem")
+    if not os.path.isfile(pub_path):
+        return jsonify(error="Public key không tồn tại"), 404
+    pub_pem = open(pub_path, "rb").read()
+    client_pub = load_pem_public_key(pub_pem)
+
+    # Load AES key
     key_path = os.path.join(KEYS_DIR, f"{video_id}.key")
     if not os.path.isfile(key_path):
-        return jsonify(error=f"Không tìm thấy key cho video '{video_id}'"), 404
-
+        return jsonify(error="AES key không tồn tại"), 404
     raw_key = open(key_path, "rb").read()
-    key_b64 = base64.b64encode(raw_key).decode("ascii")
-    return jsonify(key_b64=key_b64)
+
+    # Mã hóa key bằng RSA-OAEP SHA-256
+    cipherkey = client_pub.encrypt(
+        raw_key,
+        padding.OAEP(
+            mgf=padding.MGF1(algorithm=hashes.SHA256()),
+            algorithm=hashes.SHA256(),
+            label=None
+        )
+    )
+    b64 = base64.b64encode(cipherkey).decode('ascii')
+    return jsonify(key_rsa_b64=b64)
+
+@app.route("/segment/<path:filename>")
+def serve_segment(filename):
+    if not filename.endswith(('.enc','.bin')):
+        abort(404)
+    return send_from_directory(SEGMENT_DIR, filename)
 
 if __name__ == "__main__":
-    port = int(os.getenv("PORT", 9000))
-    # Chỉ lắng nghe trên localhost
-    app.run(host="127.0.0.1", port=port, debug=True)
+    app.run(host="127.0.0.1", port=int(os.getenv("PORT", 9000)), debug=True)
