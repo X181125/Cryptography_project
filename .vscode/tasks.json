@@ -2,53 +2,46 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Build Chaotic_Cryptology.dll (MSVC Debug, absolute paths)",
+            "label": "Build ChaoticCryptology DLL (Debug)",
             "type": "shell",
             "command": "cl.exe",
             "args": [
-                // ================= Compiler Options =================
+                // ============ Compiler flags ============
                 "/EHsc",
-                "/Zi",                   // Generate debug info
-                "/MDd",                  // Use Debug DLL CRT
-                "/std:c++17",            // Use C++17 standard
-                "/LDd",                  // Build a Debug DLL
+                "/Zi",
+                "/MDd",
+                "/std:c++17",
+                "/LDd",
 
-                // ================ Output DLL File =================
-                // DLL sẽ xuất vào thư mục output
-                "/Fe:D:\\Visual_Studio_Code_Workspace\\secure_video_streamming\\ChaoticCryptology\\output\\Chaotic_Cryptology.dll",
+                // ============ Include paths ============
+                "/I", "${workspaceFolder}\\openssl_library\\include",
+                "/I", "${workspaceFolder}\\ChaoticCryptology\\include",
 
-                // ================ Import‐Library ==================
-                // Bắt buộc phải có, để tạo Chaotic_Cryptology.lib trong output
-                "/IMPLIB:D:\\Visual_Studio_Code_Workspace\\secure_video_streamming\\ChaoticCryptology\\output\\Chaotic_Cryptology.lib",
+                // ============ Source file ============
+                "${workspaceFolder}\\ChaoticCryptology\\src\\ChaoticCryptology.cpp",
 
-                // ================= Include Paths ==================
-                "/I", "D:\\Visual_Studio_Code_Workspace\\secure_video_streamming\\openssl_library\\include",
-                "/I", "D:\\Visual_Studio_Code_Workspace\\secure_video_streamming\\ChaoticCryptology\\include",
-
-                // ================= Source Files ===================
-                "D:\\Visual_Studio_Code_Workspace\\secure_video_streamming\\ChaoticCryptology\\src\\chaotic.cpp",
-                "D:\\Visual_Studio_Code_Workspace\\secure_video_streamming\\ChaoticCryptology\\src\\crypto.cpp",
-
-                // ================ Linker Options ==================
+                // ============ Switch to linker ============
                 "/link",
-                "/INCREMENTAL:NO",       // Disable incremental linking
 
-                // ================ Library Paths ==================
-                "/LIBPATH:D:\\Visual_Studio_Code_Workspace\\secure_video_streamming\\openssl_library\\lib",
+                // ============ Linker flags ============
+                "/OUT:${workspaceFolder}\\ChaoticCryptology\\output\\Chaotic_Cryptology.dll",
+                "/IMPLIB:${workspaceFolder}\\ChaoticCryptology\\output\\Chaotic_Cryptology.lib",
+                "/INCREMENTAL:NO",
 
-                // ================ Library Files ==================
+                // OpenSSL lib path & libs
+                "/LIBPATH:${workspaceFolder}\\openssl_library\\lib",
                 "libcrypto.lib",
                 "libssl.lib"
             ],
             "options": {
-                "cwd": "D:\\Visual_Studio_Code_Workspace\\secure_video_streamming\\ChaoticCryptology\\output"
+                "cwd": "${workspaceFolder}\\ChaoticCryptology\\output"
             },
             "group": {
-                "kind": "build"
+                "kind": "build",
             },
             "presentation": {
                 "reveal": "always",
-                "panel": "new",
+                "panel": "shared",
                 "clear": true
             },
             "problemMatcher": [
