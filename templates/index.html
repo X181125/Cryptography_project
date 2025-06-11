@@ -3,12 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Secure Video Streaming Demo</title>
-
-  <!-- 1) CSS chính -->
+  <title>Secure Video Streaming</title>
   <link rel="stylesheet" href="/static/css/style.css" />
 
-  <!-- 2) Load WASM module (fallback dạng global) -->
+  <!-- WASM -->
   <script src="/static/wasm/chaotic_wasm.js"></script>
   <script>
     window.ChaoticModulePromise = new Promise((resolve) => {
@@ -26,20 +24,24 @@
     });
   </script>
 
-  <!-- 3) Script chính -->
+  <!-- Script -->
   <script type="module" src="/static/js/script.js"></script>
 </head>
-<body>
+<body oncontextmenu="return false">
   <div class="container">
     <header>
-      <h1>HLS-like Secure Streaming Demo</h1>
-      <p class="subtitle">Chaotic XOR + AES-256-GCM + RSA-O AEP</p>
+      <h1>Secure Streaming Demo</h1>
     </header>
     <main>
-      <video id="videoPlayer" controls autoplay muted></video>
+      <video id="videoPlayer"
+            autoplay muted playsinline controls
+            controlsList="nodownload"
+            style="width: 100%; height: auto;"
+            onmousedown="if(event.button === 0) event.preventDefault();">
+      </video>
     </main>
     <footer>
-      <p>© 2025 Cryptography & Security Project</p>
+      <p>© 2025 Secure Streaming</p>
     </footer>
   </div>
 </body>
